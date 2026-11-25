@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -7,24 +8,33 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build WAR') {
+
+        stage('Compile') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean compile'
             }
         }
-        stage('Build Docker Image') {
+
+        stage('Build') {
             steps {
-                sh 'docker build -t student-portal:1.0 .'
+                sh 'mvn package'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'java -jar target/student-app-1.0.0.jar'
             }
         }
     }
 
     post {
         success {
-            echo 'Maven Web WAR and Docker image built successfully.'
+            echo 'Java application completed successfully.'
         }
         failure {
             echo 'Build failed. Check the console output.'
         }
     }
 }
+
