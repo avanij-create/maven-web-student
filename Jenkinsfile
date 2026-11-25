@@ -23,18 +23,30 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'java -jar target/student-app-1.0.0.jar'
+                withCredentials([usernamePassword(
+                    credentialsId: 'TOMCAT_CREDENTIALS',
+                    usernameVariable: 'TOMCAT_USER',
+                    passwordVariable: 'TOMCAT_PASS'
+                )]) {
+                    sh '''
+                        curl --fail --silent --show-error \
+                          -u "$TOMCAT_USER:$TOMCAT_PASS" \
+                          --upload-file target/student-portal.war \
+                          "http://${TOMCAT_HOST}:8080/manager/text/deploy?path=/student-portal&update=true"
+                    '''
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'Java application completed successfully.'
+            echo 'Web application deployed successfully.'
         }
         failure {
             echo 'Build failed. Check the console output.'
         }
     }
 }
+
 
