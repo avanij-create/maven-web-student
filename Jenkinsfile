@@ -31,25 +31,15 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'TOMCAT_CREDENTIALS',
-                    usernameVariable: 'TOMCAT_USER',
-                    passwordVariable: 'TOMCAT_PASS'
-                )]) {
-                    sh '''
-                        curl --fail --silent --show-error \
-                          -u "$TOMCAT_USER:$TOMCAT_PASS" \
-                          --upload-file target/student-portal.war \
-                          "http://${TOMCAT_HOST}:8080/manager/text/deploy?path=/student-portal&update=true"
-                    '''
-                }
+                echo 'WAR file generated and archived successfully.'
+                echo 'Deploy the WAR to Tomcat on port 8080.'
             }
         }
     }
 
     post {
         success {
-            echo 'Web application deployed successfully!'
+            echo 'Pipeline completed successfully!'
         }
 
         failure {
@@ -57,6 +47,3 @@ pipeline {
         }
     }
 }
-
-
-
