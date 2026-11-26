@@ -2,8 +2,11 @@
 pipeline {
     agent any
 
-    stages {
+    tools {
+        maven 'Maven3'
+    }
 
+    stages {
         stage('Checkout') {
             steps {
                 git branch: 'main',
@@ -31,17 +34,15 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'WAR file generated and archived successfully.'
-                echo 'Deploy the WAR to Tomcat on port 8080.'
+                echo 'WAR file is ready for deployment.'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Build completed successfully.'
         }
-
         failure {
             echo 'Build failed. Check Console Output.'
         }
