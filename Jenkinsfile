@@ -3,9 +3,11 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
-                checkout scm
+                git branch: 'main',
+                    url: 'https://github.com/avanij-create/maven-web-student.git'
             }
         }
 
@@ -18,6 +20,12 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mvn package'
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.war'
             }
         }
 
@@ -41,12 +49,14 @@ pipeline {
 
     post {
         success {
-            echo 'Web application deployed successfully.'
+            echo 'Web application deployed successfully!'
         }
+
         failure {
-            echo 'Build failed. Check the console output.'
+            echo 'Build failed. Check Console Output.'
         }
     }
 }
+
 
 
